@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>{{ homework.title }}</h2>
+        <p><strong>Subject:</strong> {{ homework.subject.name }}</p>
+        <p><strong>Teacher:</strong> {{ homework.teacher.get_full_name|default:homework.teacher.username }}</p>
+        <p><strong>Issue Date:</strong> {{ homework.issue_date }}</p>
+        <p><strong>Due Date:</strong> {{ homework.due_date }} 
+            {% if homework.is_overdue %}<span class="badge bg-danger">Overdue</span>{% endif %}
+        </p>
+        <p><strong>Max Score:</strong> {{ homework.max_score }}</p>
+        <h4>Description</h4>
+        <p>{{ homework.description }}</p>
+        
+        {% if homework.penalties.all %}
+            <h4>Penalties for Late Submission</h4>
+            <ul>
+                {% for penalty in homework.penalties.all %}
+                    <li>
+                        After {{ penalty.days_after_due }} days: 
+                        {% if penalty.penalty_type == 'percentage' %}
+                            {{ penalty.penalty_value }}% of max score
+                        {% else %}
+                            {{ penalty.penalty_value }} points
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        {% if user.profile.group == 'student' %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Submit Homework</h5>
+                    {% if submissions %}
+                        <p>You have submitted this homework {{ submissions.count }} time(s).</p>
+                        <a href="{% url 'submit_homework' homework.pk %}" class="btn btn-primary">Submit Again</a>
+                    {% else %}
+                        <a href="{% url 'submit_homework' homework.pk %}" class="btn btn-primary">Submit Homework</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if submissions %}
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Your Submissions</h5>
+                    {% for submission in submissions %}
+                        <div class="border-bottom pb-2 mb-2">
+                            <p><strong>Submitted:</strong> {{ submission.submission_date }}</p>
+                            {% if submission.score %}
+                                <p><strong>Score:</strong> {{ submission.score }}/{{ homework.max_score }}</p>
+                                {% if submission.get_final_score != submission.score %}
+                                    <p><strong>Final Score:</strong> {{ submission.get_final_score }} (after penalties)</p>
+                                {% endif %}
+                            {% else %}
+                                <p><em>Not graded yet</em></p>
+                            {% endif %}
+                            {% if submission.teacher_comment %}
+                                <p><strong>Teacher's Comment:</strong> {{ submission.teacher_comment }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if user.profile.group == 'teacher' and user == homework.teacher %}
+    <div class="mt-3">
+        <a href="{% url 'view_submissions' homework.pk %}" class="btn btn-secondary">View All Submissions</a>
+    </div>
+{% endif %}
+{% endblock %}

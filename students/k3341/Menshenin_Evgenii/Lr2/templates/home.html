@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Homework Board</h1>
+    <p class="lead">A platform for managing homework assignments and submissions.</p>
+    <hr class="my-4">
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}! You are logged in as {{ user.profile.group }}.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'homework_list' %}" role="button">View Homework</a>
+    {% else %}
+        <p>Please log in or sign up to access the homework board.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+        <a class="btn btn-secondary btn-lg" href="{% url 'signup' %}" role="button">Sign Up</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <h2>Student Grades</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Student</th>
+            {% for homework in homework_list %}
+            <th>{{ homework.title }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in student_list %}
+        <tr>
+            <td>{{ student.username }}</td>
+            {% for homework in homework_list %}
+            <td>
+                {% for submission in submissions %}
+                {% if submission.student == student and submission.homework == homework %}
+                {% if submission.score %}
+                {{ submission.score }}
+                {% else %}
+                -
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
