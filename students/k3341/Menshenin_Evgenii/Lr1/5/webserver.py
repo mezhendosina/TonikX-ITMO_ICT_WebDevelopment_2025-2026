@@ -116,7 +116,7 @@ class MyHTTPServer:
 
 if __name__ == '__main__':
     host = "localhost"
-    port = 8082
+    port = 8081
     name = 'name'
     serv = MyHTTPServer(host, port, name)
     try:
