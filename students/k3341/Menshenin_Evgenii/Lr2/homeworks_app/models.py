@@ -76,4 +76,4 @@ class Submission(models.Model):
             return None
         penalty = self.get_penalty()
         final_score = self.score - penalty
-        return max(0, final_score)  # Ensure score doesn't go below 0
+        return max(0, final_score)

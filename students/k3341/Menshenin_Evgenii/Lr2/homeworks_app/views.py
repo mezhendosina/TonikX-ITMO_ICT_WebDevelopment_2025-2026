@@ -54,13 +54,6 @@ def submit_homework(request, pk):
         'homework': homework
     })
 
-
-@login_required
-def my_submissions(request):
-    submissions = Submission.objects.filter(student=request.user)
-    return render(request, 'homeworks/my_submissions.html', {'submissions': submissions})
-
-
 @login_required
 def students_grades_table(request):
     homework_list_obj = Homework.objects.all()
