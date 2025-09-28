@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
 
 from accounts.models import Profile
 from .forms import SubmissionForm
@@ -21,9 +22,13 @@ def homework_list(request):
     
     if subject_id:
         homeworks = homeworks.filter(subject_id=subject_id)
+    
+    paginator = Paginator(homeworks, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'homeworks/homework_list.html', {
-        'homeworks': homeworks,
+        'page_obj': page_obj,
         'subjects': subjects,
         'selected_subject': subject_id
     })
