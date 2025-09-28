@@ -71,10 +71,4 @@
         {% endif %}
     </div>
 </div>
-
-{% if user.profile.group == 'teacher' and user == homework.teacher %}
-    <div class="mt-3">
-        <a href="{% url 'view_submissions' homework.pk %}" class="btn btn-secondary">View All Submissions</a>
-    </div>
-{% endif %}
 {% endblock %}

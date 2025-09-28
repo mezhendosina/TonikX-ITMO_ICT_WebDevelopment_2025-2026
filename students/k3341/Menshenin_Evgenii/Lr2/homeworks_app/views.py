@@ -5,17 +5,28 @@ from django.shortcuts import render, get_object_or_404, redirect
 
 from accounts.models import Profile
 from .forms import SubmissionForm
-from .models import Homework, Submission
+from .models import Homework, Submission, Subject
 
 
 @login_required
 def homework_list(request):
+    subjects = Subject.objects.all()
+    
+    subject_id = request.GET.get('subject')
+    
     if request.user.profile.group == 'teacher':
         homeworks = Homework.objects.filter(teacher=request.user)
     else:
         homeworks = Homework.objects.all()
+    
+    if subject_id:
+        homeworks = homeworks.filter(subject_id=subject_id)
 
-    return render(request, 'homeworks/homework_list.html', {'homeworks': homeworks})
+    return render(request, 'homeworks/homework_list.html', {
+        'homeworks': homeworks,
+        'subjects': subjects,
+        'selected_subject': subject_id
+    })
 
 
 @login_required
